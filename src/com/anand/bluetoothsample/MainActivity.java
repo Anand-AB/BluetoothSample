@@ -1,9 +1,16 @@
 package com.anand.bluetoothsample;
 
-import android.support.v7.app.ActionBarActivity;
+
+
+
+
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -11,24 +18,64 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		((ListView) findViewById(R.id.my_main_listview)).setAdapter((new UserAdapter(getApplicationContext(), createDummyUserModels())));
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+	public void search(View v)
+	{
+		Toast.makeText(getApplicationContext(), "Plus touched", Toast.LENGTH_SHORT).show();
+		startActivity(new Intent(this,SearchActivity.class));
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+	}
+	public UserModel[] createDummyUserModels(){
+
+
+		String[] usern={"cap","watch","tv","mobile","bags", "shoes","books","spray","computer", "ac"};
+		String[] msg={"yoyo","watch","tv","mobile","bags", "shoes","books","spray","computer", "ac"};
+		String[] time={"1.0","5.00","4.00","6.00","8.00", "10.00","2.00","11.00","12.00", "5.05"};
+		int[] count={1,10,4,3,1, 2,1,6,1,5};
+
+		UserModel[] userlist=new UserModel[count.length];
+		for (int i = 0; i < count.length; i++) {
+			userlist[i]=new UserModel((usern[i]),msg[i],(time[i]),(count[i]));
 		}
-		return super.onOptionsItemSelected(item);
+		return userlist;
+
 	}
 }
+
+
+
+//		String prodts=(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())).getString("productlist", "");
+//		StringTokenizer stk=new StringTokenizer(prodts, "|");
+//		StringTokenizer stk2=null;
+//		int no_of_prdts = stk.countTokens();
+//		String[] ids = new String[no_of_prdts];
+//		String[] pnames = new String[no_of_prdts];
+//		String[] qtys = new String[no_of_prdts];
+//		String[] prices = new String[no_of_prdts];
+//		for (int i = 0; i < no_of_prdts; i++) {
+//			stk2=new StringTokenizer(stk.nextToken(), ",");
+//			ids[i]=((stk2.nextToken()));
+//
+//
+//			pnames[i]=(stk2.nextToken());
+//			qtys[i]=((stk2.nextToken()));
+//			prices[i]=((stk2.nextToken()));
+
+
+
+
+//				phone=(stk2.nextToken());
+//				photo=(stk2.nextToken());
+//				if(usename.equalsIgnoreCase(username_entered) && passw.equals(password_entered)){
+//					loginStatus=true;
+//					Editor e=(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())).edit();
+//					e.putString("username", username_entered);
+//					e.putString("password", password_entered);
+//					e.putString("name", stk2.nextToken());
+//					e.putString("email", stk2.nextToken());
+//					e.putLong("phone",Long.parseLong(stk2.nextToken()));
+//					e.commit();
+//					break;
