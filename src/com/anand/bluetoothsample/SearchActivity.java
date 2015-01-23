@@ -1,9 +1,5 @@
 package com.anand.bluetoothsample;
 
-
-
-
-
 import java.util.ArrayList;
 
 import android.bluetooth.BluetoothAdapter;
@@ -34,10 +30,9 @@ public class SearchActivity extends ActionBarActivity {
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){
 			bluetoothEnabled=true;
+			new ConnectionAcceptThread(mBluetoothAdapter).start();
 
 		}
-
-
 	}
 
 	@Override
@@ -48,9 +43,7 @@ public class SearchActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch ( item.getItemId()) {
-
 		case R.id.action_list_pired_devices:
 			Toast.makeText(getApplicationContext(), "You pressed List Paired Devices",Toast.LENGTH_SHORT).show();
 			listPairedDevices();
@@ -69,7 +62,6 @@ public class SearchActivity extends ActionBarActivity {
 		default:
 			break;
 		}
-
 		return true;
 	}
 
@@ -78,16 +70,16 @@ public class SearchActivity extends ActionBarActivity {
 			// Device does not support Bluetooth
 			Toast.makeText(getApplicationContext(), "No Bluetooth found",Toast.LENGTH_SHORT).show();
 			bluetoothEnabled=false;
-		}else if (!mBluetoothAdapter.isEnabled()) {
+		}
+		else if (!mBluetoothAdapter.isEnabled()) {
 			startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT_CONST);
 			Toast.makeText(getApplicationContext(), "Please Turn on Bluetooth", Toast.LENGTH_LONG).show();
 
-		}else if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled()){
+		}
+		else if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled()){
 			Toast.makeText(getApplicationContext(), "Turning off Bluetooth", Toast.LENGTH_LONG).show();
 			mBluetoothAdapter.disable();
 		}
-
-
 	}
 
 	private void listPairedDevices() {
@@ -100,8 +92,6 @@ public class SearchActivity extends ActionBarActivity {
 				ListView myListview = (ListView)findViewById(R.id.activity_main_paired_listView);
 				myListview .setAdapter(mArrayAdapter);
 			}
-		}else{
-
 		}
 	}
 
@@ -112,6 +102,11 @@ public class SearchActivity extends ActionBarActivity {
 			final DevicesListViewAdapter mArrayAdapter=new DevicesListViewAdapter(getApplicationContext(), listOfDevices);
 			ListView myListview = (ListView)findViewById(R.id.activity_main_new_listView);
 			myListview .setAdapter(mArrayAdapter);
+
+		//	 Make sure we're not doing discovery anymore
+//			if (mBluetoothAdapter!= null) {
+//				mBluetoothAdapter.cancelDiscovery();
+//			}
 			mBluetoothAdapter.startDiscovery();
 
 			// Create a BroadcastReceiver for ACTION_FOUND
@@ -136,16 +131,6 @@ public class SearchActivity extends ActionBarActivity {
 			}
 		}
 	}
-
-
-
-	//	public void search(View v)
-	//	{
-	//		Toast.makeText(getApplicationContext(), "Plus touched", Toast.LENGTH_SHORT).show();
-	//		
-
-	//}
-
 }
 
 

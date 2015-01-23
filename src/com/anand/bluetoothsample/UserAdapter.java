@@ -5,9 +5,11 @@ package com.anand.bluetoothsample;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserAdapter extends ArrayAdapter<UserModel>{
 
@@ -38,6 +40,7 @@ public class UserAdapter extends ArrayAdapter<UserModel>{
 			LayoutInflater mLayoutInflater = LayoutInflater.from(myContext);
 			convertView = mLayoutInflater.inflate(R.layout.chat_list_item, parent, false);
 		}
+
 		TextView username = (TextView) convertView.findViewById(R.id.username);
 		TextView message = (TextView) convertView.findViewById(R.id.msg);
 		TextView time = (TextView) convertView.findViewById(R.id.time);
@@ -48,6 +51,8 @@ public class UserAdapter extends ArrayAdapter<UserModel>{
 		message.setText(usersList[position].getMessage());
 		time.setText(usersList[position].getTime());
 		count.setText(usersList[position].getCount()+"");
+
+		
 
 		return convertView;
 	}
