@@ -24,16 +24,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.SyncStateContract.Constants;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -86,10 +82,13 @@ public class BluetoothChatFragment extends Fragment {
 	 */
 	private BluetoothChatService mChatService = null;
 
+	public static BluetoothDevice currentDevice;
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+		//setHasOptionsMenu(true);
 		// Get local Bluetooth adapter
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -174,9 +173,12 @@ public class BluetoothChatFragment extends Fragment {
 				View view = getView();
 				if (null != view) {
 					TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
-					String message = textView.getText().toString();
-					sendMessage(message);
-				}
+					String myMessage = textView.getText().toString();
+					if(myMessage!=null && currentDevice!=null){
+						new ConnectToDeviceThread(currentDevice, myMessage).start();
+					}else{
+						Toast.makeText(getActivity().getApplicationContext(), "Please Enter a Messsage to send", Toast.LENGTH_SHORT).show();
+					}				}
 			}
 		});
 
@@ -231,8 +233,13 @@ public class BluetoothChatFragment extends Fragment {
 		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
 			// If the action is a key-up event on the return key, send the message
 			if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-				String message = view.getText().toString();
-				sendMessage(message);
+				String myMessage = view.getText().toString();
+				if(myMessage!=null && currentDevice!=null){
+					new ConnectToDeviceThread(currentDevice, myMessage).start();
+				}else{
+					Toast.makeText(getActivity().getApplicationContext(), "Please Enter a Messsage to send", Toast.LENGTH_SHORT).show();
+				}
+
 			}
 			return true;
 		}
@@ -370,33 +377,33 @@ public class BluetoothChatFragment extends Fragment {
 		mChatService.connect(device, secure);
 	}
 
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//		inflater.inflate(R.menu.bluetooth_chat, menu);
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case R.id.secure_connect_scan: {
-//			// Launch the DeviceListActivity to see devices and do scan
-//			Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-//			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-//			return true;
-//		}
-//		case R.id.insecure_connect_scan: {
-//			// Launch the DeviceListActivity to see devices and do scan
-//			Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-//			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-//			return true;
-//		}
-//		case R.id.discoverable: {
-//			// Ensure this device is discoverable by others
-//			ensureDiscoverable();
-//			return true;
-//		}
-//		}
-//		return false;
-//	}
+	//	@Override
+	//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	//		inflater.inflate(R.menu.bluetooth_chat, menu);
+	//	}
+	//
+	//	@Override
+	//	public boolean onOptionsItemSelected(MenuItem item) {
+	//		switch (item.getItemId()) {
+	//		case R.id.secure_connect_scan: {
+	//			// Launch the DeviceListActivity to see devices and do scan
+	//			Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+	//			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+	//			return true;
+	//		}
+	//		case R.id.insecure_connect_scan: {
+	//			// Launch the DeviceListActivity to see devices and do scan
+	//			Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+	//			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+	//			return true;
+	//		}
+	//		case R.id.discoverable: {
+	//			// Ensure this device is discoverable by others
+	//			ensureDiscoverable();
+	//			return true;
+	//		}
+	//		}
+	//		return false;
+	//	}
 
 }

@@ -14,6 +14,8 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+
+
 		((ListView) findViewById(R.id.my_main_listview)).setAdapter((new UserAdapter(getApplicationContext(), createDummyUserModels())));
 	}
 

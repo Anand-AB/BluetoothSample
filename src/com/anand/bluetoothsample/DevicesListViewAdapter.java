@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,14 +48,18 @@ public class DevicesListViewAdapter extends ArrayAdapter<BluetoothDevice> {
 		nameTextView.setText(scannedDevices.get(position).getName());
 		btAddressTextView.setText(scannedDevices.get(position).getAddress());
 		adrr=scannedDevices.get(position).getAddress();
-		
+
 		convertView.setOnClickListener(new OnClickListener() {
- 
+
 			@Override
 			public void onClick(View v) {
 
 				Toast.makeText(getContext(),"Clicked "+scannedDevices.get(position).getName(), Toast.LENGTH_LONG).show();
-				new ConnectToDeviceThread(scannedDevices.get(position)).start();
+				BluetoothChatFragment.currentDevice=scannedDevices.get(position);
+				new ConnectToDeviceThread(scannedDevices.get(position), "TEST MESSAGE").start();
+				Intent min=new Intent(myContext,ChatActivity.class);
+				min.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				myContext.startActivity(min);
 			}
 		});
 

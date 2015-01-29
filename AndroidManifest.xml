@@ -29,6 +29,14 @@
             android:name="com.anand.bluetoothsample.SearchActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.anand.bluetoothsample.BluetoothChatFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.anand.bluetoothsample.ChatActivity"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>

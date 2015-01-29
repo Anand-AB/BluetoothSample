@@ -9,9 +9,11 @@ import android.bluetooth.BluetoothSocket;
 
 public class ConnectToDeviceThread extends Thread {
 	private final BluetoothDevice mmDevice;
+	String msg;
 
-	public ConnectToDeviceThread(BluetoothDevice device) {
+	public ConnectToDeviceThread(BluetoothDevice device, String message) {
 		mmDevice = device;
+		msg=message;
 		System.out.println("Connecting to Device..");
 		System.out.println(mmDevice.getName()+"\t"+mmDevice.getAddress());
 	}
@@ -26,11 +28,13 @@ public class ConnectToDeviceThread extends Thread {
 		try {
 			tmp = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
 			tmp.connect();
-			tmp.getOutputStream().write("Sample".getBytes());
-			tmp.close();			
+			tmp.getOutputStream().write(msg.getBytes());
+			tmp.close();	
+
 		} catch (Exception e) { System.out.println("ERROR"); }
+
 	}
-	
-	
-	
+
+
+
 }

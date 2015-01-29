@@ -51,7 +51,8 @@ public class SearchActivity extends ActionBarActivity {
 
 		case R.id.action_scan_devices:
 			Toast.makeText(getApplicationContext(), "You pressed Scan",Toast.LENGTH_SHORT).show();
-			scanBluetoothDevices();
+			//scanBluetoothDevices();
+			doDiscovery();
 			return true;
 
 		case R.id.action_turn_on:
@@ -83,7 +84,10 @@ public class SearchActivity extends ActionBarActivity {
 	}
 
 	private void listPairedDevices() {
+		
+		
 		//Bluetooth should be available and turned on
+	
 		if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && bluetoothEnabled){
 			//scanning for previously paired devices
 			ArrayList<BluetoothDevice> listOfDevices = new ArrayList<BluetoothDevice>(mBluetoothAdapter.getBondedDevices());
@@ -95,6 +99,50 @@ public class SearchActivity extends ActionBarActivity {
 		}
 	}
 
+	public void doDiscovery() {
+		
+		ArrayList<BluetoothDevice> listOfDevices = new ArrayList<BluetoothDevice>();
+		final DevicesListViewAdapter mArrayAdapter=new DevicesListViewAdapter(getApplicationContext(), listOfDevices);
+		ListView myListview = (ListView)findViewById(R.id.activity_main_new_listView);
+		myListview .setAdapter(mArrayAdapter);
+		
+		System.out.println("doDiscovery()"); 
+
+		// Indicate scanning in the title
+		setProgressBarIndeterminateVisibility(true);
+		setTitle(R.string.scanning);
+
+
+		// If we're already discovering, stop it
+		if (mBluetoothAdapter.isDiscovering()) {
+			mBluetoothAdapter.cancelDiscovery();
+		}
+
+		// Request discover from BluetoothAdapter
+		mBluetoothAdapter.startDiscovery();
+		
+		// Create a BroadcastReceiver for ACTION_FOUND
+					if(mReceiver==null){
+						mReceiver = new BroadcastReceiver() {
+							@Override
+							public void onReceive(Context context, Intent intent) {
+								String action = intent.getAction();
+								// When discovery finds a device
+								if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+									// Get the BluetoothDevice object from the Intent
+									BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+									// Add the name and address to an array adapter to show in a ListView
+									mArrayAdapter.add(device);
+									mArrayAdapter.notifyDataSetChanged();
+								}
+							}
+						};
+						// Register the BroadcastReceiver
+						IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+						registerReceiver(mReceiver, filter);
+					}
+	}
+
 	private void scanBluetoothDevices() {
 		if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && bluetoothEnabled){
 
@@ -103,10 +151,10 @@ public class SearchActivity extends ActionBarActivity {
 			ListView myListview = (ListView)findViewById(R.id.activity_main_new_listView);
 			myListview .setAdapter(mArrayAdapter);
 
-		//	 Make sure we're not doing discovery anymore
-//			if (mBluetoothAdapter!= null) {
-//				mBluetoothAdapter.cancelDiscovery();
-//			}
+			//	 Make sure we're not doing discovery anymore
+			//			if (mBluetoothAdapter!= null) {
+			//				mBluetoothAdapter.cancelDiscovery();
+			//			}
 			mBluetoothAdapter.startDiscovery();
 
 			// Create a BroadcastReceiver for ACTION_FOUND
